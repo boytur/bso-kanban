@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String?    // ชื่อผู้ใช้ (อาจเป็น null ถ้าไม่มีข้อมูลจาก provider)
+  email         String?    @unique // อีเมลของผู้ใช้ (unique)   
+  emailVerified DateTime?
+  image         String?    // URL ของรูปโปรไฟล์ผู้ใช้
+  createdAt     DateTime   @default(now()) // เวลาที่สร้างผู้ใช้นี้
+
+  accounts      Account[]
+  sessions      Session[]
+  posts         Post[]   // ความสัมพันธ์กับโพสต์ที่ผู้ใช้สร้างขึ้น
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? // optional field for refresh token
+  access_token      String? // optional field for access token
+  expires_at        Int?    // optional field for expiration time
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String?
+  createdAt DateTime @default(now())
+  author    User?    @relation(fields: [authorId], references: [id]) // ความสัมพันธ์กับผู้เขียน (User)
+  authorId  String?  // ฟิลด์ foreign key ที่เชื่อมกับ User
+}
