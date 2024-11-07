@@ -8,7 +8,7 @@ export async function GET() {
         const response = await prisma.post.findMany();
         return NextResponse.json({ body: response}, { status: 200 });
     } catch (error) {
-        return new NextResponse("Internal Server Error", {
+        return new NextResponse("Internal Server Error" + error, {
             status: 500,
         });
     }
@@ -23,11 +23,9 @@ export async function POST(req: Request) {
                 content,
             },
         });
-        console.log("POST Response:", newPost); // ตรวจสอบ response ที่ได้รับจากฐานข้อมูล
         return NextResponse.json({body: newPost, message: "Created successful"}, {status: 201});
     } catch (error) {
-        console.error("POST Error:", error); // แสดง error ในคอนโซล
-        return new NextResponse("Internal Server Error", {
+        return new NextResponse("Internal Server Error" + error, {
             status: 500,
         });
     }
