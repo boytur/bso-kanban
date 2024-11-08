@@ -46,7 +46,7 @@ const Column: React.FC<ColumnProps> = ({ columnId, column, index }) => {
 
     return (
         <>
-            <Draggable draggableId={columnId} index={index}>
+            <Draggable draggableId={columnId} index={index} isDragDisabled={false}>
                 {(provided) => (
                     <div
                         ref={provided.innerRef}
@@ -66,7 +66,7 @@ const Column: React.FC<ColumnProps> = ({ columnId, column, index }) => {
                                     >
                                         {column.items.map((item, index) => (
                                             <DraggableItem key={item.id} item={item} index={index} />
-                                        ))}
+                                            ))}
                                         {provided.placeholder}
                                         {!column.items.length && (
                                             <p className="text-center text-gray-500 mt-4">ไม่มีไอเท็มในคอลัมน์นี้</p>

@@ -28,6 +28,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
+
         if (inputRef.current) {
             if (isDuplicateName) {
                 inputRef.current.blur();

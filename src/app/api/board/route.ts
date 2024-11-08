@@ -13,7 +13,7 @@ export async function GET() {
             include: {
                 columns: {
                     orderBy: { // ใช้ orderBy ที่ระดับ columns ด้วย
-                        order: "desc"
+                        order: "asc"
                     },
                     include: {
                         tasks: true
@@ -41,6 +41,7 @@ export async function GET() {
                 projectId: board.projectId,
                 ownerId: board.ownerId,
                 columns: columnsData,
+                length: board.columns.length,
             };
         });
 
