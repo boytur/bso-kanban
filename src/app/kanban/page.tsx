@@ -1,5 +1,4 @@
 "use client";
-
 import React, { Suspense } from "react";
 import {
   QueryClient,
@@ -13,19 +12,19 @@ const KanbanBoardLazy = React.lazy(() => import("./components/KanbanBoard"));
 const queryClient = new QueryClient();
 
 type ItemType = { id: string; content: string };
-type ColumnType = { name: string; items: ItemType[] };
+type ColumnType = { id: string; name: string; items: ItemType[] };
 type ColumnsType = { [key: string]: ColumnType };
 
 type BoardType = {
-    id: string;
-    projectId: string;
-    ownerId: string;
-    columns: ColumnsType;
-    length: number;
+  id: string;
+  projectId: string;
+  ownerId: string;
+  columns: ColumnsType;
+  length: number;
 };
 
 type FetchResponseType = {
-    body: BoardType[];
+  body: BoardType[];
 };
 
 export default function HomeApp() {
@@ -70,8 +69,23 @@ function Home() {
       }),
     });
     const responseData = await response.json();
-    console.log(responseData);
   };
+
+  // ฟังก์ชัน fetch ข้อมูล board data
+  async function fetchBoardData(): Promise<FetchResponseType> {
+    const res = await fetch("http://localhost:3000/api/board", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    return await res.json();
+  }
 
   return (
     <>
@@ -96,19 +110,5 @@ function Home() {
   );
 }
 
-// ฟังก์ชัน fetch ข้อมูล board data
-async function fetchBoardData(): Promise<FetchResponseType> {
-  const res = await fetch("http://localhost:3000/api/board", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 
-  if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
-  }
-
-  return await res.json();
-}
 

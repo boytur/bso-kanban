@@ -38,7 +38,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
         }
     }, [isDuplicateName, isAddingColumn]);
 
-    const onDragEnd = (result: DropResult) => {
+    const onDragEnd = async (result: DropResult) => {
         const { source, destination, type } = result;
         if (!destination) return;
 
@@ -59,6 +59,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
             if (sourceColumn === destColumn) {
                 sourceItems.splice(destination.index, 0, movedItem);
                 setData({ ...data, [source.droppableId]: { ...sourceColumn, items: sourceItems } });
+                await updateTaskOrder(movedItem.id, destination.droppableId, destination.index);
             } else {
                 destItems.splice(destination.index, 0, movedItem);
                 setData({
@@ -66,6 +67,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                     [source.droppableId]: { ...sourceColumn, items: sourceItems },
                     [destination.droppableId]: { ...destColumn, items: destItems },
                 });
+                await updateTaskOrder(movedItem.id, destination.droppableId, destination.index);
             }
         }
     };
@@ -93,6 +95,39 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
         setIsDuplicateName(false);
     };
 
+    const insertTask = async (name: string, columnId: string, order: number) => {
+        const response = await fetch("http://localhost:3000/api/tasks", {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                columnId: columnId,
+                order: order
+            })
+        });
+    }
+
+    const updateTaskOrder = async (taskId: string, columnId: string, order: number) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/tasks/${taskId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ columnId, order }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update task order");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
     return (
         <>
             <DragDropContext onDragEnd={onDragEnd}>
@@ -113,6 +148,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                                             index={index}
                                             data={data}
                                             setData={setData}
+                                            insertTask={insertTask}
                                         />
                                     ))}
                                     {provided.placeholder}

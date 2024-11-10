@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DraggableItem from './DraggableItem';
 import dynamic from 'next/dynamic';
 
@@ -15,9 +15,10 @@ interface ColumnProps {
     index: number;
     data: ColumnsType;
     setData: React.Dispatch<React.SetStateAction<ColumnsType>>;
+    insertTask: (name: string, columnId: string, order: number) => void;
 }
 
-const Column: React.FC<ColumnProps> = ({ columnId, column, index }) => {
+const Column: React.FC<ColumnProps> = ({ columnId, column, index, insertTask, setData, data }) => {
     const [isAddTaskOpen, setIsAddTaskOpen] = React.useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const addTaskRef = useRef<HTMLDivElement>(null);
@@ -29,6 +30,7 @@ const Column: React.FC<ColumnProps> = ({ columnId, column, index }) => {
 
         function handleClickOutside(event: MouseEvent) {
             if (addTaskRef.current && !addTaskRef.current.contains(event.target as Node)) {
+                insertNewData()
                 setIsAddTaskOpen(false);
             }
         }
@@ -43,6 +45,27 @@ const Column: React.FC<ColumnProps> = ({ columnId, column, index }) => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [isAddTaskOpen]);
+
+    const insertNewData = () => {
+        try {
+            if (inputRef.current?.value) {
+                const newTask: ItemType = {
+                    id: `${Date.now()}`, // สร้าง id ใหม่ตามเวลาปัจจุบัน หรืออาจสร้างแบบอื่นที่เหมาะสม
+                    content: inputRef.current.value,
+                };
+    
+                setData({ ...data, [columnId]: { name: column.name, items: [...column.items, newTask] } })
+    
+                // เรียก insertTask เพื่ออัปเดตข้อมูลในฐานข้อมูลหรือ backend
+                insertTask(inputRef.current.value, columnId , data[columnId].items.length);
+    
+                inputRef.current.value = '';
+            }
+    
+        } catch (error) {
+            
+        }
+    }
 
     return (
         <>

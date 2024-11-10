@@ -16,7 +16,11 @@ export async function GET() {
                         order: "asc"
                     },
                     include: {
-                        tasks: true
+                        tasks: {
+                            orderBy: { // ใช้ orderBy ที่ระดับ columns ด้วย
+                                order: "asc"
+                            },
+                        }
                     }
                 }
             }
@@ -27,7 +31,7 @@ export async function GET() {
             const columnsData: ColumnsType = {};
 
             board.columns.forEach(column => {
-                columnsData[column.name.toLowerCase()] = {
+                columnsData[column.id] = {
                     name: column.name,
                     items: column.tasks.map(task => ({
                         id: task.id,
