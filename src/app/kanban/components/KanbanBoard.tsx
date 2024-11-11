@@ -131,14 +131,14 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
     return (
         <>
             <DragDropContext onDragEnd={onDragEnd}>
-                <div className="container overflow-x-auto max-h-[700px] bg-white rounded-lg shadow-lg">
-                    <div className="flex flex-nowrap min-h-[700px] gap-4">
+                <div className="overflow-x-auto">
+                    <div className="flex flex-nowrap gap-4">
                         <Droppable droppableId="all-columns" direction="horizontal" type="column" isDropDisabled={false} isCombineEnabled={false} ignoreContainerClipping={false} >
                             {(provided) => (
                                 <div
                                     ref={provided.innerRef}
                                     {...provided.droppableProps}
-                                    className="flex gap-6 rounded-lg text-black"
+                                    className="flex gap-6 text-black"
                                 >
                                     {Object.entries(data).map(([columnId, column], index) => (
                                         <Column
@@ -171,7 +171,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
                                 </div>
                             )}
                         </Droppable>
-                    </div>
+                </div>
                 </div>
             </DragDropContext>
         </>
