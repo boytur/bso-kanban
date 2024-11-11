@@ -89,23 +89,22 @@ function Home() {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold">KAN board</h2>
-        <div className="flex items-center space-x-2">
-          <button className="bg-blue-500 text-white py-1 px-4 rounded">
-            Import work
-          </button>
-          <button className="bg-gray-200 py-1 px-4 rounded">Insights</button>
-          <button className="bg-gray-200 py-1 px-4 rounded">View settings</button>
+      <div className="container mx-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-semibold">KAN board</h2>
+          <div className="flex items-center space-x-2">
+            <button className="bg-blue-500 text-white py-1 px-4 rounded">
+              Import work
+            </button>
+            <button className="bg-gray-200 py-1 px-4 rounded">Insights</button>
+            <button className="bg-gray-200 py-1 px-4 rounded">View settings</button>
+          </div>
         </div>
-      </div>
-
-      <div className="flex justify-center items-center align-items-middle">
         <Suspense fallback={<p>Loading Kanban...</p>}>
           <KanbanBoardLazy information={board.columns} InsertColumn={InsertColumn} />
         </Suspense>
+        {isFetching && <p>Updating...</p>}
       </div>
-      {isFetching && <p>Updating...</p>}
     </>
   );
 }
