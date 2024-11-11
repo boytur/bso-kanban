@@ -41,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </header>
 
                 {/* Page Content */}
-                <main className="flex-1 bg-stone-800 overflow-hidden">
+                <main className="bg-red-50 w-full h-full p-4">
                     {children}
                 </main>
             </div>
